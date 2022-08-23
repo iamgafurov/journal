@@ -61,7 +61,7 @@ func (s *Server) Shutdown(ctx context.Context) {
 
 //Ping handler
 func (s *Server) ping(w http.ResponseWriter, r *http.Request) {
-	s.reply(w, dto.Response{Code: enums.Success})
+	s.reply(w, dto.Response{Code: enums.Success, Message: "pong"})
 }
 
 //parse body of http Request

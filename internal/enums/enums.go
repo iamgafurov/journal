@@ -11,7 +11,9 @@ const (
 )
 
 const (
-	StatusActive = "active"
+	StatusActive  = "active"
+	StatusPending = "pending"
+	StatusFailed  = "failed"
 )
 
 const (

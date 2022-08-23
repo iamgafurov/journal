@@ -11,7 +11,9 @@ import (
 
 type Service interface {
 	Tokenize(ctx context.Context, request dto.TokenizeRequest) (resp dto.Response)
+	TokenDelete(ctx context.Context, req dto.DeleteTokenRequest) (resp dto.Response)
 	UserGetByToken(ctx context.Context, token string) (models.User, error)
+	CheckUser(ctx context.Context, req dto.CheckUserRequest) (resp dto.Response)
 }
 
 type service struct {

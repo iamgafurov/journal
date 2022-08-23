@@ -2,7 +2,6 @@ package postgres
 
 import (
 	"context"
-	"database/sql"
 	"github.com/iamgafurov/journal/internal/dto"
 	"github.com/iamgafurov/journal/internal/models"
 )
@@ -60,22 +59,15 @@ func (d *db) UserGetByToken(ctx context.Context, token string) (user models.User
 	return
 }
 
-func (d *db) GetUserAuthParams(ctx context.Context, login string) (params dto.AuthParams, err error) {
-	//params = dto.AuthParams{
-	//	UserId:   122,
-	//	Tmk:      "123",
-	//	Login:    "user1",
-	//	Password: "myPass",
-	//}
-	//return
-
-	query := `SELECT isu_prl_id,tmk, adempiere.getAsciiCode(prp)  FROM adempiere.isu_prl WHERE RTRIM(clogin)=$1`
-	err = d.pool.QueryRow(ctx, query, login).Scan(&params.UserId, &params.Tmk, &params.Password, &params.AsciiCode)
+func (d *db) UserDeleteByToken(ctx context.Context, token string) error {
+	sql := `DELETE FROM users WHERE token = $1`
+	cmd, err := d.pool.Exec(ctx, sql, token)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return dto.AuthParams{}, dto.ErrNoRows
-		}
-		return
+		return err
 	}
-	return params, nil
+
+	if cmd.RowsAffected() != 1 {
+		return dto.ErrNoRowsAffected
+	}
+	return nil
 }

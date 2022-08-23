@@ -41,23 +41,28 @@ func (s *Server) auth(next http.HandlerFunc) http.HandlerFunc {
 
 		user, err := s.service.UserGetByToken(r.Context(), token)
 		if err != nil {
-			log.Println(err)
 			s.reply(w, dto.Response{Code: enums.Unauthorized})
 			return
 		}
-		log.Println(service, user.Service)
+
 		if service != user.Service {
 			s.reply(w, dto.Response{Code: enums.Unauthorized})
 			return
 		}
-		log.Println(user.ExpireAt, time.Now())
+
 		if user.ExpireAt.Before(time.Now()) {
-			s.reply(w, dto.Response{Code: enums.TokenExpired, Message: "token expired"})
+			s.reply(w, dto.Response{Code: enums.TokenExpired, Status: enums.StatusFailed, Message: "token expired"})
 			return
 		}
 
 		if user.Status != enums.StatusActive {
 			s.reply(w, dto.Response{Code: enums.UserNotActive, Message: "user not active"})
+			return
+		}
+
+		resp := s.service.CheckUser(r.Context(), dto.CheckUserRequest{Login: user.Login, UchprocId: user.UchprocId})
+		if resp.Code != enums.Success {
+			s.reply(w, dto.Response{Code: enums.Unauthorized, Status: enums.StatusFailed, Message: "user deleted"})
 			return
 		}
 

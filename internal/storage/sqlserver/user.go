@@ -30,3 +30,21 @@ func (d *db) GetUserAuthParams(ctx context.Context, login string) (params dto.Au
 	}
 	return params, nil
 }
+
+func (d *db) UserGetLoginByUchprocId(ctx context.Context, uchprocId int64) (login string, err error) {
+	conn, err := d.pool.Conn(ctx)
+	if err != nil {
+		return
+	}
+	defer conn.Close()
+
+	query := `SELECT RTRIM(clogin) FROM adempiere.isu_prl WHERE isu_prl_id = $1`
+	err = conn.QueryRowContext(ctx, query, uchprocId).Scan(&login)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return "", dto.ErrNoRows
+		}
+		return
+	}
+	return login, nil
+}
