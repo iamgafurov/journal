@@ -55,3 +55,27 @@ func (s *Server) tokenDelete(w http.ResponseWriter, r *http.Request) {
 
 	s.reply(w, serviceResp)
 }
+
+func (s *Server) userFaculties(w http.ResponseWriter, r *http.Request) {
+	var req dto.ServiceNameExternalRef
+
+	if !parseBody(r, &req) {
+		s.reply(w, dto.Response{Code: enums.BadRequest, Message: "bad request"})
+		return
+	}
+
+	user, ok := r.Context().Value("user").(*models.User)
+	if !ok {
+		s.reply(w, dto.Response{Code: enums.InternalError})
+		logger.Logger.Error("handler/rest/user.go, tokenDelete cannot cast user from context", zap.Any("Request", req))
+		return
+	}
+
+	serviceResp := s.service.UserFaculties(r.Context(), req, user.UchprocId)
+
+	if s.cfg.Debug {
+		logger.Logger.Info("UserFaculties", zap.Any("Request", req), zap.Any("Response", serviceResp))
+	}
+
+	s.reply(w, serviceResp)
+}

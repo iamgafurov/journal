@@ -9,6 +9,7 @@ import (
 	"github.com/iamgafurov/journal/internal/tools"
 	jsoniter "github.com/json-iterator/go"
 	"go.uber.org/zap"
+	"log"
 	"time"
 )
 
@@ -20,6 +21,11 @@ func (s *service) Tokenize(ctx context.Context, request dto.TokenizeRequest) (re
 	)
 	defer sentry.Recover()
 
+	//pl := dto.MainFilterPayload{
+	//	Faculties: []dto.Faculty{{Id: 1, Code: 2211, Name: "KhusPus faculty", Specialties: []dto.Speciality{{Years: []dto.Year{{Groups: []dto.Group{{}}}}}}}},
+	//}
+	//resp.Payload = pl
+	//return
 	if request.ServiceName != enums.ServiceMobi && request.ServiceName != enums.ServiceWeb {
 		resp.ErrCode(enums.BadRequest)
 		resp.Message = "invalid service name"
@@ -32,19 +38,23 @@ func (s *service) Tokenize(ctx context.Context, request dto.TokenizeRequest) (re
 		return
 	}
 
-	/*params, err := s.mssqlDB.GetUserAuthParams(ctx, l)
+	params, err := s.mssqlDB.GetUserAuthParams(ctx, l)
+	log.Println(params)
 	if err != nil {
 		if err == dto.ErrNoRows {
 			resp.ErrCode(enums.Unauthorized)
+			return
 		}
 		resp.ErrCode(enums.InternalError)
 		s.log.Error("service/user.go Tokenize/GetUserAuthParams", zap.Error(err), zap.Any("ExternalRef", request.ExternalRef))
 		sentry.CaptureException(err)
 		return
-	}*/
-	paramPass := ParamPass{TmK: "18:19:18", PrP: "|8240|0100|1052|1026|0004|0016|1026|0064|0016|0004|1026|0008|0064|0001|0002|0002", CLogin: "Oper_05             "}
+	}
+	paramPass := ParamPass{TmK: params.Tmk, CLogin: params.Login, PrP: params.Password}
+	//paramPass := ParamPass{TmK: "18:19:18", PrP: "|8240|0100|1052|1026|0004|0016|1026|0064|0016|0004|1026|0008|0064|0001|0002|0002", CLogin: "Oper_05             "}
 	hpass := DecodePassword(paramPass)
 	if hpass != p {
+		log.Println(hpass, p)
 		resp.ErrCode(enums.Unauthorized)
 		resp.Message = "Wrong password"
 		return

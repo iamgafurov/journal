@@ -60,11 +60,11 @@ func (s *Server) auth(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		resp := s.service.CheckUser(r.Context(), dto.CheckUserRequest{Login: user.Login, UchprocId: user.UchprocId})
+		/*resp := s.service.CheckUser(r.Context(), dto.CheckUserRequest{Login: user.Login, UchprocId: user.UchprocId})
 		if resp.Code != enums.Success {
 			s.reply(w, dto.Response{Code: enums.Unauthorized, Status: enums.StatusFailed, Message: "user deleted"})
 			return
-		}
+		}*/
 
 		ctx := context.WithValue(r.Context(), "user", &user)
 		next.ServeHTTP(w, r.WithContext(ctx))

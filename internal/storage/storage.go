@@ -9,6 +9,7 @@ import (
 type MSSQLDB interface {
 	GetUserAuthParams(ctx context.Context, login string) (params dto.AuthParams, err error)
 	UserGetLoginByUchprocId(ctx context.Context, uchprocId int64) (login string, err error)
+	GetFaculties(ctx context.Context, userUchprocId int64) (res []dto.Faculty, err error)
 	Close()
 }
 

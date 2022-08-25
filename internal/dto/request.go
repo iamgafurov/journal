@@ -24,3 +24,8 @@ type CheckUserRequest struct {
 	Login     string `json:"login"`
 	UchprocId int64  `json:"uchprocId"`
 }
+
+type ServiceNameExternalRef struct {
+	ServiceName string `json:"serviceName"`
+	ExternalRef string `json:"externalRef"`
+}
