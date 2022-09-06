@@ -1,0 +1,397 @@
+definitions:
+  dto.AcademicYearsPayload:
+    properties:
+      academicYears:
+        items:
+          type: string
+        type: array
+    type: object
+  dto.AcademicYearsRequest:
+    properties:
+      externalRef:
+        type: string
+      serviceName:
+        type: string
+      userUchprocCode:
+        type: integer
+    type: object
+  dto.Course:
+    properties:
+      attendance_id:
+        type: integer
+      course_name:
+        type: string
+      credits_count:
+        type: string
+      group_id:
+        type: integer
+      is_assistant:
+        type: boolean
+      point_id:
+        type: integer
+      start_date:
+        type: string
+      teacher_name:
+        type: string
+    type: object
+  dto.DeleteTokenRequest:
+    properties:
+      externalRef:
+        type: string
+      serviceName:
+        type: string
+      token:
+        type: string
+    type: object
+  dto.FacultiesRequest:
+    properties:
+      academicYear:
+        type: string
+      externalRef:
+        type: string
+      serviceName:
+        type: string
+    type: object
+  dto.Faculty:
+    properties:
+      code:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      specialties:
+        items:
+          $ref: '#/definitions/dto.Speciality'
+        type: array
+    type: object
+  dto.GetPointsJournalRequest:
+    properties:
+      course_id:
+        type: integer
+      externalRef:
+        type: string
+      serviceName:
+        type: string
+      userUchprocCode:
+        type: integer
+    type: object
+  dto.Group:
+    properties:
+      code:
+        type: string
+      id:
+        type: integer
+    type: object
+  dto.GroupCoursesPayload:
+    properties:
+      courses:
+        items:
+          $ref: '#/definitions/dto.Course'
+        type: array
+    type: object
+  dto.GroupCoursesRequest:
+    properties:
+      externalRef:
+        type: string
+      groupId:
+        type: integer
+      serviceName:
+        type: string
+      userUchprocCode:
+        type: integer
+    type: object
+  dto.LoginPass:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  dto.MainFilterPayload:
+    properties:
+      faculties:
+        items:
+          $ref: '#/definitions/dto.Faculty'
+        type: array
+    type: object
+  dto.PointJournal:
+    properties:
+      current_week:
+        type: integer
+      max_point:
+        type: integer
+      points:
+        items:
+          $ref: '#/definitions/dto.StudentPoint'
+        type: array
+      weeks_number:
+        type: integer
+    type: object
+  dto.Response:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+      payload:
+        type: object
+      status:
+        type: string
+    type: object
+  dto.Speciality:
+    properties:
+      code:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      years:
+        items:
+          $ref: '#/definitions/dto.Year'
+        type: array
+    type: object
+  dto.StudentPoint:
+    properties:
+      grade:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      points_sum:
+        type: number
+      record_book:
+        type: string
+      week_points:
+        items:
+          $ref: '#/definitions/dto.WeekPoint'
+        type: array
+    type: object
+  dto.TokenizePayload:
+    properties:
+      expireAt:
+        type: string
+      token:
+        type: string
+    type: object
+  dto.TokenizeRequest:
+    properties:
+      externalRef:
+        type: string
+      loginPass:
+        $ref: '#/definitions/dto.LoginPass'
+      serviceName:
+        type: string
+    type: object
+  dto.WeekPoint:
+    properties:
+      editable:
+        type: boolean
+      point:
+        type: number
+      week_number:
+        type: integer
+    type: object
+  dto.Year:
+    properties:
+      code:
+        type: string
+      groups:
+        items:
+          $ref: '#/definitions/dto.Group'
+        type: array
+      id:
+        type: integer
+    type: object
+info:
+  contact: {}
+  title: API
+paths:
+  /academic_years:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: token
+        in: header
+        name: Token
+        required: true
+        type: string
+      - description: Service Name
+        in: header
+        name: Service
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AcademicYearsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.AcademicYearsPayload'
+      summary: Get academic years
+  /courses:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: token
+        in: header
+        name: Token
+        required: true
+        type: string
+      - description: Service Name
+        in: header
+        name: Service
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.GroupCoursesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GroupCoursesPayload'
+      summary: Get group courses
+  /faculties:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: token
+        in: header
+        name: Token
+        required: true
+        type: string
+      - description: Service Name
+        in: header
+        name: Service
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.FacultiesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MainFilterPayload'
+      summary: Get user faculties, specialities, years and groups
+  /ping:
+    post:
+      description: ping server
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.Response'
+      summary: ping
+  /point_journal/get:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: token
+        in: header
+        name: Token
+        required: true
+        type: string
+      - description: Service Name
+        in: header
+        name: Service
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.GetPointsJournalRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PointJournal'
+      summary: Get poins journal
+  /tokenize:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: token
+        in: header
+        name: Token
+        required: true
+        type: string
+      - description: Service Name
+        in: header
+        name: Service
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.TokenizeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.TokenizePayload'
+      summary: Tokenize user
+  /untokenize:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: token
+        in: header
+        name: Token
+        required: true
+        type: string
+      - description: Service Name
+        in: header
+        name: Service
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.DeleteTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.Response'
+      summary: Delete user token
+schemes:
+- http
+swagger: "2.0"

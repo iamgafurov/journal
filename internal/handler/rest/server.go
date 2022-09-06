@@ -2,6 +2,7 @@ package rest
 
 import (
 	"context"
+	_ "github.com/iamgafurov/journal/docs"
 	"github.com/iamgafurov/journal/internal/config"
 	"github.com/iamgafurov/journal/internal/dto"
 	"github.com/iamgafurov/journal/internal/enums"
@@ -21,7 +22,7 @@ import (
 //Server - http api server
 // @title API
 // @schemes http
-// @BasePath /api/v1
+// @BasePath
 type Server struct {
 	httpServer *http.Server //http server
 	cfg        *config.Config
@@ -59,7 +60,11 @@ func (s *Server) Shutdown(ctx context.Context) {
 	}
 }
 
-//Ping handler
+// Card godoc
+// @Summary ping
+// @Description ping server
+// @Success 200 {object} dto.Response
+// @Router /ping [post]
 func (s *Server) ping(w http.ResponseWriter, r *http.Request) {
 	s.reply(w, dto.Response{Code: enums.Success, Message: "pong"})
 }

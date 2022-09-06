@@ -10,22 +10,17 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	"go.uber.org/zap"
 	"log"
+	"strings"
 	"time"
 )
 
 func (s *service) Tokenize(ctx context.Context, request dto.TokenizeRequest) (resp dto.Response) {
 	var (
-		l          = request.LoginPass.Login
-		p          = request.LoginPass.Password
-		isu_prl_id int64
+		l = request.LoginPass.Login
+		p = request.LoginPass.Password
 	)
-	defer sentry.Recover()
+	//defer sentry.Recover()
 
-	//pl := dto.MainFilterPayload{
-	//	Faculties: []dto.Faculty{{Id: 1, Code: 2211, Name: "KhusPus faculty", Specialties: []dto.Speciality{{Years: []dto.Year{{Groups: []dto.Group{{}}}}}}}},
-	//}
-	//resp.Payload = pl
-	//return
 	if request.ServiceName != enums.ServiceMobi && request.ServiceName != enums.ServiceWeb {
 		resp.ErrCode(enums.BadRequest)
 		resp.Message = "invalid service name"
@@ -62,7 +57,7 @@ func (s *service) Tokenize(ctx context.Context, request dto.TokenizeRequest) (re
 
 	th := dto.TokenHash{
 		Login: l,
-		Id:    isu_prl_id,
+		Id:    params.UserId,
 		Time:  time.Now().UnixNano(),
 	}
 
@@ -78,12 +73,14 @@ func (s *service) Tokenize(ctx context.Context, request dto.TokenizeRequest) (re
 	token := tools.HmacHash(bt, s.cfg.MasterKey)
 
 	user := models.User{
-		Login:     l,
-		Token:     token,
-		Service:   request.ServiceName,
-		ExpireAt:  time.Now().Add(time.Duration(s.cfg.TokensDurationInHours) * time.Hour),
-		Status:    enums.StatusActive,
-		UchprocId: isu_prl_id,
+		Login:       l,
+		Token:       token,
+		Service:     request.ServiceName,
+		ExpireAt:    time.Now().Add(time.Duration(s.cfg.TokensDurationInHours) * time.Hour),
+		Status:      enums.StatusActive,
+		UchprocId:   params.UserId,
+		UchprocCode: params.UserCode,
+		Name:        strings.TrimSpace(params.UserName),
 	}
 
 	_, err = s.postgresDB.UserInsert(ctx, user)

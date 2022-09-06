@@ -54,6 +54,5 @@ func main() {
 		close(sig)
 		cancel()
 	}()
-
 	server.Run()
 }

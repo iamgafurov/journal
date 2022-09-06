@@ -2,45 +2,59 @@ package sqlserver
 
 import (
 	"context"
-	"database/sql"
 	"github.com/iamgafurov/journal/internal/dto"
 )
 
-func (d *db) GetFaculties(ctx context.Context, userUchprocId int64) (res []dto.Faculty, err error) {
-	conn, err := d.pool.Conn(ctx)
+func (d *db) GetFaculties(ctx context.Context, userUchprocId int64, studyYear string) (res []dto.Faculty, err error) {
+	query := `SELECT 
+    			fak.kdn,
+				fak.kfk,
+				RTRIM(fak.nfk),
+				spe.kdn,
+				spe.ksp,
+				RTRIM(spe.nsp),
+				krs.kdn,
+				krs.kkr,
+				grp.kdn,
+				grp.kgr
+			FROM fak
+			INNER JOIN spe ON fak.kdn = spe.kfk
+			INNER JOIN krs ON spe.kdn = krs.ksp
+			INNER JOIN grp ON krs.kdn = grp.kkr
+			INNER JOIN tblvdkr ON grp.kdn = tblvdkr.kgr
+			WHERE tblvdkr.kst = $1 AND tblvdkr.chruchgod = $2`
+	rows, err := d.pool.QueryContext(ctx, query, userUchprocId, studyYear)
 	if err != nil {
-		return
-	}
-	defer conn.Close()
-
-	query := ``
-	rows, err := conn.QueryContext(ctx, query)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, dto.ErrNoRows
-		}
 		return
 	}
 
 	for rows.Next() {
 		var (
 			fId   int64
-			fCode int64
+			fCode string
 			fName string
 			sId   int64
-			sCode int64
+			sCode string
 			sName string
 			cId   int64
-			cCode int64
-			cName string
+			cCode string
 			gId   int64
-			gCode int64
-			gName string
+			gCode string
 		)
-		err = rows.Scan(&fId, &fCode, &fName, &sId, &sCode, &sName, &cId, &cCode, &cName, &gId, &gCode, &gName)
+
+		err = rows.Scan(&fId, &fCode, &fName, &sId, &sCode, &sName, &cId, &cCode, &gId, &gCode)
 		if err != nil {
 			return
 		}
+
+		res = set(res, dto.Faculty{Id: fId, Code: fCode, Name: fName,
+			Specialties: []dto.Speciality{{Id: sId, Code: sCode, Name: sName,
+				Years: []dto.Year{{Id: cId, Code: cCode,
+					Groups: []dto.Group{{Id: gId, Code: gCode}},
+				}},
+			}},
+		})
+
 	}
 
 	return res, nil
@@ -57,9 +71,10 @@ func set(faculties []dto.Faculty, faculty dto.Faculty) (fk []dto.Faculty) {
 	}
 	if fInd < 0 {
 		fk = append(fk, faculty)
+		return
 	}
 
-	for i, s := range fk[fInd].Specialties {
+	for i, s := range fk[0].Specialties {
 		if s.Id == faculty.Specialties[0].Id {
 			sInd = i
 			break
@@ -71,7 +86,7 @@ func set(faculties []dto.Faculty, faculty dto.Faculty) (fk []dto.Faculty) {
 	}
 
 	for i, c := range fk[fInd].Specialties[sInd].Years {
-		if c.Id == faculty.Specialties[sInd].Years[0].Id {
+		if c.Id == faculty.Specialties[0].Years[0].Id {
 			cInd = i
 			break
 		}

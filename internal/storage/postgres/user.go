@@ -12,18 +12,22 @@ func (d *db) UserInsert(ctx context.Context, user models.User) (id int64, err er
 				login,
 				service,
 				uchproc_id,
+				uchproc_code,
+				name,
 				expire_at,
 				status
 			)
-			VALUES($1, $2, $3, $4, $5, $6)
+			VALUES($1, $2, $3, $4, $5, $6, $7, $8)
 			ON CONFLICT(login, service)
-				DO UPDATE SET token = $1, updated_at = NOW(), expire_at = $5 
+				DO UPDATE SET token = $1, updated_at = NOW(), expire_at = $7 
 			RETURNING id;`
 	err = d.pool.QueryRow(ctx, sql,
 		user.Token,
 		user.Login,
 		user.Service,
 		user.UchprocId,
+		user.UchprocCode,
+		user.Name,
 		user.ExpireAt,
 		user.Status,
 	).Scan(&id)
@@ -38,6 +42,8 @@ func (d *db) UserGetByToken(ctx context.Context, token string) (user models.User
 				login,
 				service,
 				uchproc_id,
+				uchproc_code,
+				name,
 				reg_date,
 				updated_at,
 				expire_at,
@@ -50,6 +56,8 @@ func (d *db) UserGetByToken(ctx context.Context, token string) (user models.User
 			&user.Login,
 			&user.Service,
 			&user.UchprocId,
+			&user.UchprocCode,
+			&user.Name,
 			&user.RegDate,
 			&user.UpdatedAt,
 			&user.ExpireAt,
