@@ -18,9 +18,13 @@ func (s *Server) routers() http.Handler {
 	mux.HandleFunc(s.cfg.ServerPrefix+"/courses", s.auth(s.groupCourses))
 	mux.HandleFunc(s.cfg.ServerPrefix+"/academic_years", s.auth(s.academicYears))
 	mux.HandleFunc(s.cfg.ServerPrefix+"/topic/all", s.auth(s.topics))
+	mux.HandleFunc(s.cfg.ServerPrefix+"/topic/create", s.auth(s.topicCreate))
 	mux.HandleFunc(s.cfg.ServerPrefix+"/topic/delete", s.auth(s.topicDelete))
 	mux.HandleFunc(s.cfg.ServerPrefix+"/topic/update", s.auth(s.topicUpdate))
 	mux.HandleFunc(s.cfg.ServerPrefix+"/point_journal/get", s.auth(s.pointsJournal))
+	mux.HandleFunc(s.cfg.ServerPrefix+"/point_journal/update", s.auth(s.pointsJournalUpdate))
+	mux.HandleFunc(s.cfg.ServerPrefix+"/attendance_journal/get", s.auth(s.getAttendanceJournal))
+	mux.HandleFunc(s.cfg.ServerPrefix+"/attendance_journal/update", s.auth(s.updateAttendanceJournal))
 
 	/*
 			point/getbycourseId[/weeks/maxPoints]

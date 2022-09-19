@@ -47,9 +47,14 @@ func (r *Response) ErrCode(code int) {
 		r.Status = enums.StatusFailed
 		r.Message = "The user is blocked"
 		return
+	case enums.SuccessPartially:
+		r.Code = enums.SuccessPartially
+		r.Message = "success partially"
+		r.Status = "warning"
+		return
 	default:
-		r.Code = enums.InternalError
-		r.Status = "pending"
-		r.Message = "Internal error(invalid code)"
+		r.Code = code
+		r.Status = ""
+		r.Message = "undefined invalid code"
 	}
 }

@@ -143,11 +143,11 @@ func (s *Server) academicYears(w http.ResponseWriter, r *http.Request) {
 // @Produce json
 // @Param Token header string true "token"
 // @Param Service header string true "Service Name"
-// @Param Request body dto.GetPointsJournalRequest true "Request body"
-// @Router /point_journal/get [post]
+// @Param Request body dto.GetJournalRequest true "Request body"
+// @Router /point_journal/get [get]
 // @Success 200 {object} dto.PointJournal
 func (s *Server) pointsJournal(w http.ResponseWriter, r *http.Request) {
-	var req dto.GetPointsJournalRequest
+	var req dto.GetJournalRequest
 
 	if !parseBody(r, &req) {
 		s.reply(w, dto.Response{Code: enums.BadRequest, Message: "bad request"})
@@ -166,6 +166,105 @@ func (s *Server) pointsJournal(w http.ResponseWriter, r *http.Request) {
 
 	if s.cfg.Debug {
 		logger.Logger.Info("pointsJournal", zap.Any("Request", req), zap.Any("Response", serviceResp))
+	}
+
+	s.reply(w, serviceResp)
+}
+
+// @Summary Update poins journal
+// @Accept json
+// @Produce json
+// @Param Token header string true "token"
+// @Param Service header string true "Service Name"
+// @Param Request body dto.UpdatePointJournalRequest true "Request body"
+// @Router /point_journal/update [post]
+// @Success 200 {object} dto.Response
+func (s *Server) pointsJournalUpdate(w http.ResponseWriter, r *http.Request) {
+	var req dto.UpdatePointJournalRequest
+
+	if !parseBody(r, &req) {
+		s.reply(w, dto.Response{Code: enums.BadRequest, Message: "bad request"})
+		return
+	}
+
+	user, ok := r.Context().Value("user").(*models.User)
+	if !ok {
+		s.reply(w, dto.Response{Code: enums.InternalError})
+		logger.Logger.Error("handler/rest/user.go, pointsJournal cannot cast user from context", zap.Any("Request", req))
+		return
+	}
+
+	req.UserUchprocCode = user.UchprocCode
+	serviceResp := s.service.UpdatePointJournal(r.Context(), req)
+
+	if s.cfg.Debug {
+		logger.Logger.Info("pointsJournalUpdate", zap.Any("Request", req), zap.Any("Response", serviceResp))
+	}
+
+	s.reply(w, serviceResp)
+}
+
+// @Summary Get attendance journal
+// @Accept json
+// @Produce json
+// @Param Token header string true "token"
+// @Param Service header string true "Service Name"
+// @Param Request body dto.GetJournalRequest true "Request body"
+// @Router /attendance_journal/get [get]
+// @Success 200 {object} dto.GetAttendanceJournalPayload
+func (s *Server) getAttendanceJournal(w http.ResponseWriter, r *http.Request) {
+	var req dto.GetJournalRequest
+
+	if !parseBody(r, &req) {
+		s.reply(w, dto.Response{Code: enums.BadRequest, Message: "bad request"})
+		return
+	}
+
+	user, ok := r.Context().Value("user").(*models.User)
+	if !ok {
+		s.reply(w, dto.Response{Code: enums.InternalError})
+		logger.Logger.Error("handler/rest/user.go, pointsJournal cannot cast user from context", zap.Any("Request", req))
+		return
+	}
+
+	req.UserUchprocCode = user.UchprocCode
+	serviceResp := s.service.GetAttendanceJournal(r.Context(), req)
+
+	if s.cfg.Debug {
+		logger.Logger.Info("getAttendanceJournal", zap.Any("Request", req), zap.Any("Response", serviceResp))
+	}
+
+	s.reply(w, serviceResp)
+}
+
+// @Summary Update attendance journal
+// @Accept json
+// @Produce json
+// @Param Token header string true "token"
+// @Param Service header string true "Service Name"
+// @Param Request body dto.UpdateAttendanceJournalRequest true "Request body"
+// @Router /attendance_journal/update [post]
+// @Success 200 {object} dto.AttendanceJournalError
+func (s *Server) updateAttendanceJournal(w http.ResponseWriter, r *http.Request) {
+	var req dto.UpdateAttendanceJournalRequest
+
+	if !parseBody(r, &req) {
+		s.reply(w, dto.Response{Code: enums.BadRequest, Message: "bad request"})
+		return
+	}
+
+	user, ok := r.Context().Value("user").(*models.User)
+	if !ok {
+		s.reply(w, dto.Response{Code: enums.InternalError})
+		logger.Logger.Error("handler/rest/user.go, updateAttendanceJournal cannot cast user from context", zap.Any("Request", req))
+		return
+	}
+
+	req.UserUchprocCode = user.UchprocCode
+	serviceResp := s.service.UpdateAttendanceJournal(r.Context(), req)
+
+	if s.cfg.Debug {
+		logger.Logger.Info("updateAttendanceJournal", zap.Any("Request", req), zap.Any("Response", serviceResp))
 	}
 
 	s.reply(w, serviceResp)

@@ -51,90 +51,11 @@ func (d *db) GetGroupCourses(ctx context.Context, groupId, userId int64) (cs []d
 	return
 }
 
-func (d *db) GetPointsJournal(ctx context.Context, courseId int64) (dto.PointJournal, error) {
-	journal := dto.PointJournal{}
-	points := make([]dto.StudentPoint, 0)
-
-	query := `SELECT 
-    			std.kdn, 
-       			nst,
-       			kzc,
-       			tblvdstkr.oceblkr1, 
-       			tblvdstkr.oceblkr2, 
-       			tblvdstkr.oceblkr3, 
-       			tblvdstkr.oceblkr4, 
-       			tblvdstkr.oceblkr5, 
-       			tblvdstkr.oceblkr6, 
-       			tblvdstkr.oceblkr7, 
-       			tblvdstkr.oceblkr8, 
-       			tblvdstkr.oceblkr9, 
-       			tblvdstkr.oceblkr10, 
-       			tblvdstkr.oceblkr11, 
-       			tblvdstkr.oceblkr12, 
-       			tblvdstkr.oceblkr13, 
-       			tblvdstkr.oceblkr14, 
-       			tblvdstkr.oceblkr15, 
-       			tblvdstkr.oceblkr16, 
-       			tblvdstkr.oceblkr17, 
-       			tblvdstkr.oceblkr18,
-       			tblvdstkr.itoceblkr,
-       			tblvdstkr.itocekr
-			FROM std
-			INNER JOIN tblvdstkr on std.kdn = tblvdstkr.kst
-			WHERE tblvdstkr.kvd = $1
-			ORDER BY pnn`
-
-	rows, err := d.pool.QueryContext(ctx, query, courseId)
-	if err != nil {
-		return journal, err
-	}
-
-	for rows.Next() {
-		pt := make([]float32, 18)
-		st := dto.StudentPoint{}
-		err = rows.Scan(
-			&st.Id,
-			&st.Name,
-			&st.RecordBook,
-			&pt[0], &pt[1], &pt[2], &pt[3], &pt[4], &pt[5], &pt[6], &pt[7], &pt[8], &pt[9], &pt[10], &pt[11], &pt[12], &pt[13], &pt[14], &pt[15], &pt[16], &pt[17],
-			&st.PointsSum,
-			&st.Grade,
-		)
-		if err != nil {
-			return journal, err
-		}
-
-		st.Name = strings.TrimSpace(st.Name)
-		for i := 0; i < 18; i++ {
-			w := dto.WeekPoint{
-				WeekNumber: i,
-				Point:      pt[i],
-			}
-			st.WeekPoints = append(st.WeekPoints, w)
-		}
-
-		points = append(points, st)
-	}
-
-	journal.Points = points
-	return journal, nil
-}
-
 func (d *db) GetLastAYStartTime(ctx context.Context) (tm time.Time, err error) {
 	err = d.pool.QueryRowContext(ctx, `SELECT TOP 1  dto FROM ugd ORDER BY dto desc`).Scan(&tm)
 	if err != nil {
 		if isSqlNoRows(err) {
 			return tm, dto.ErrNoRows
-		}
-	}
-	return
-}
-
-func (d *db) GetPointUserCode(ctx context.Context, courseId int64) (code int64, err error) {
-	err = d.pool.QueryRowContext(ctx, `SELECT kst FROM tblvdtkr WHERE kdn = $1`, courseId).Scan(&code)
-	if err != nil {
-		if isSqlNoRows(err) {
-			return 0, dto.ErrNoRows
 		}
 	}
 	return

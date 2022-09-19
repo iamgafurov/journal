@@ -8,11 +8,25 @@ definitions:
     type: object
   dto.AcademicYearsRequest:
     properties:
-      externalRef:
+      external_ref:
         type: string
-      serviceName:
+      service_name:
         type: string
       userUchprocCode:
+        type: integer
+    type: object
+  dto.Attendance:
+    properties:
+      topic_number:
+        type: integer
+      value:
+        type: string
+    type: object
+  dto.AttendanceJournalError:
+    properties:
+      message:
+        type: string
+      student_id:
         type: integer
     type: object
   dto.Course:
@@ -36,9 +50,9 @@ definitions:
     type: object
   dto.DeleteTokenRequest:
     properties:
-      externalRef:
+      external_ref:
         type: string
-      serviceName:
+      service_name:
         type: string
       token:
         type: string
@@ -47,9 +61,9 @@ definitions:
     properties:
       academicYear:
         type: string
-      externalRef:
+      external_ref:
         type: string
-      serviceName:
+      service_name:
         type: string
     type: object
   dto.Faculty:
@@ -65,16 +79,32 @@ definitions:
           $ref: '#/definitions/dto.Speciality'
         type: array
     type: object
-  dto.GetPointsJournalRequest:
+  dto.GetAttendanceJournalPayload:
+    properties:
+      journal:
+        items:
+          $ref: '#/definitions/dto.StudentAttendance'
+        type: array
+    type: object
+  dto.GetJournalRequest:
     properties:
       course_id:
         type: integer
-      externalRef:
+      external_ref:
         type: string
-      serviceName:
+      limit:
+        type: integer
+      service_name:
         type: string
       userUchprocCode:
         type: integer
+    type: object
+  dto.GetTopicsPayload:
+    properties:
+      topics:
+        items:
+          $ref: '#/definitions/models.Topic'
+        type: array
     type: object
   dto.Group:
     properties:
@@ -92,11 +122,11 @@ definitions:
     type: object
   dto.GroupCoursesRequest:
     properties:
-      externalRef:
+      external_ref:
         type: string
-      groupId:
+      group_id:
         type: integer
-      serviceName:
+      service_name:
         type: string
       userUchprocCode:
         type: integer
@@ -121,12 +151,19 @@ definitions:
         type: integer
       max_point:
         type: integer
-      points:
+      students:
         items:
           $ref: '#/definitions/dto.StudentPoint'
         type: array
       weeks_number:
         type: integer
+    type: object
+  dto.PointUpdate:
+    properties:
+      id:
+        type: integer
+      point:
+        type: number
     type: object
   dto.Response:
     properties:
@@ -152,8 +189,27 @@ definitions:
           $ref: '#/definitions/dto.Year'
         type: array
     type: object
+  dto.StudentAttendance:
+    properties:
+      attendance:
+        items:
+          $ref: '#/definitions/dto.Attendance'
+        type: array
+      id:
+        type: integer
+      name:
+        type: string
+      record_book:
+        type: string
+    type: object
   dto.StudentPoint:
     properties:
+      first_rating:
+        items:
+          $ref: '#/definitions/dto.WeekPoint'
+        type: array
+      first_rating_sum:
+        type: number
       grade:
         type: string
       id:
@@ -164,10 +220,12 @@ definitions:
         type: number
       record_book:
         type: string
-      week_points:
+      second_rating:
         items:
           $ref: '#/definitions/dto.WeekPoint'
         type: array
+      second_rating_sum:
+        type: number
     type: object
   dto.TokenizePayload:
     properties:
@@ -178,17 +236,80 @@ definitions:
     type: object
   dto.TokenizeRequest:
     properties:
-      externalRef:
+      external_ref:
         type: string
-      loginPass:
+      login_pass:
         $ref: '#/definitions/dto.LoginPass'
-      serviceName:
+      service_name:
         type: string
+    type: object
+  dto.TopicAllRequest:
+    properties:
+      courseId:
+        type: integer
+      external_ref:
+        type: string
+      service_name:
+        type: string
+      userUchprocCode:
+        type: integer
+    type: object
+  dto.TopicDeleteRequest:
+    properties:
+      external_ref:
+        type: string
+      service_name:
+        type: string
+      topicId:
+        type: integer
+      userUchprocCode:
+        type: integer
+    type: object
+  dto.TopicUpdateRequest:
+    properties:
+      external_ref:
+        type: string
+      service_name:
+        type: string
+      topic:
+        $ref: '#/definitions/models.Topic'
+      topic_id:
+        type: integer
+      userUchprocCode:
+        type: integer
+    type: object
+  dto.UpdateAttendanceJournalRequest:
+    properties:
+      attendance:
+        items:
+          $ref: '#/definitions/dto.StudentAttendance'
+        type: array
+      course_id:
+        type: integer
+      external_ref:
+        type: string
+      service_name:
+        type: string
+      userUchprocCode:
+        type: integer
+    type: object
+  dto.UpdatePointJournalRequest:
+    properties:
+      course_id:
+        type: integer
+      external_ref:
+        type: string
+      points:
+        items:
+          $ref: '#/definitions/dto.PointUpdate'
+        type: array
+      service_name:
+        type: string
+      userUchprocCode:
+        type: integer
     type: object
   dto.WeekPoint:
     properties:
-      editable:
-        type: boolean
       point:
         type: number
       week_number:
@@ -204,6 +325,31 @@ definitions:
         type: array
       id:
         type: integer
+    type: object
+  models.Topic:
+    properties:
+      cnzap:
+        type: string
+      dtzap:
+        type: string
+      editable:
+        type: boolean
+      id:
+        type: integer
+      kol_kmd:
+        type: integer
+      kol_lab:
+        type: integer
+      kol_lek:
+        type: integer
+      kol_obsh:
+        type: integer
+      kol_prak:
+        type: integer
+      kol_sem:
+        type: integer
+      tema:
+        type: string
     type: object
 info:
   contact: {}
@@ -238,6 +384,64 @@ paths:
           schema:
             $ref: '#/definitions/dto.AcademicYearsPayload'
       summary: Get academic years
+  /attendance_journal/get:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: token
+        in: header
+        name: Token
+        required: true
+        type: string
+      - description: Service Name
+        in: header
+        name: Service
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.GetJournalRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetAttendanceJournalPayload'
+      summary: Get attendance journal
+  /attendance_journal/update:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: token
+        in: header
+        name: Token
+        required: true
+        type: string
+      - description: Service Name
+        in: header
+        name: Service
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateAttendanceJournalRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.AttendanceJournalError'
+      summary: Update attendance journal
   /courses:
     post:
       consumes:
@@ -306,6 +510,35 @@ paths:
             $ref: '#/definitions/dto.Response'
       summary: ping
   /point_journal/get:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: token
+        in: header
+        name: Token
+        required: true
+        type: string
+      - description: Service Name
+        in: header
+        name: Service
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.GetJournalRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PointJournal'
+      summary: Get poins journal
+  /point_journal/update:
     post:
       consumes:
       - application/json
@@ -325,15 +558,15 @@ paths:
         name: Request
         required: true
         schema:
-          $ref: '#/definitions/dto.GetPointsJournalRequest'
+          $ref: '#/definitions/dto.UpdatePointJournalRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.PointJournal'
-      summary: Get poins journal
+            $ref: '#/definitions/dto.Response'
+      summary: Update poins journal
   /tokenize:
     post:
       consumes:
@@ -363,6 +596,122 @@ paths:
           schema:
             $ref: '#/definitions/dto.TokenizePayload'
       summary: Tokenize user
+  /topic/all:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: token
+        in: header
+        name: Token
+        required: true
+        type: string
+      - description: Service Name
+        in: header
+        name: Service
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.TopicAllRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetTopicsPayload'
+      summary: Get all topics
+  /topic/create:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: token
+        in: header
+        name: Token
+        required: true
+        type: string
+      - description: Service Name
+        in: header
+        name: Service
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.TopicUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Topic'
+      summary: create topic
+  /topic/delete:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: token
+        in: header
+        name: Token
+        required: true
+        type: string
+      - description: Service Name
+        in: header
+        name: Service
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.TopicDeleteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.Response'
+      summary: delete topic
+  /topic/update:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: token
+        in: header
+        name: Token
+        required: true
+        type: string
+      - description: Service Name
+        in: header
+        name: Service
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.TopicUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.Response'
+      summary: update topic
   /untokenize:
     post:
       consumes:

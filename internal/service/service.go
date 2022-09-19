@@ -21,11 +21,16 @@ type Service interface {
 	AcademicYears(ctx context.Context, req dto.AcademicYearsRequest) (resp dto.Response)
 
 	//topic
-	TopicGetAll(ctx context.Context, req dto.TopicsRequest) (resp dto.Response)
+	TopicGetAll(ctx context.Context, req dto.TopicAllRequest) (resp dto.Response)
+	TopicCreate(ctx context.Context, req dto.TopicCreateRequest) (resp dto.Response)
 	TopicDelete(ctx context.Context, req dto.TopicDeleteRequest) (resp dto.Response)
 	TopicUpdate(ctx context.Context, req dto.TopicUpdateRequest) (resp dto.Response)
 
-	GetPointsJournal(ctx context.Context, req dto.GetPointsJournalRequest) (resp dto.Response)
+	GetPointsJournal(ctx context.Context, req dto.GetJournalRequest) (resp dto.Response)
+	UpdatePointJournal(ctx context.Context, req dto.UpdatePointJournalRequest) (resp dto.Response)
+
+	GetAttendanceJournal(ctx context.Context, req dto.GetJournalRequest) (resp dto.Response)
+	UpdateAttendanceJournal(ctx context.Context, req dto.UpdateAttendanceJournalRequest) (resp dto.Response)
 }
 
 type service struct {

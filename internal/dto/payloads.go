@@ -56,3 +56,7 @@ type AcademicYearsPayload struct {
 type GetTopicsPayload struct {
 	Topics []models.Topic `json:"topics"`
 }
+
+type GetAttendanceJournalPayload struct {
+	Journal []StudentAttendance `json:"journal"`
+}

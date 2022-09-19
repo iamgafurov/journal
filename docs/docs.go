@@ -68,6 +68,94 @@ var doc = `{
                 }
             }
         },
+        "/attendance_journal/get": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get attendance journal",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Service Name",
+                        "name": "Service",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Request body",
+                        "name": "Request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetJournalRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetAttendanceJournalPayload"
+                        }
+                    }
+                }
+            }
+        },
+        "/attendance_journal/update": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Update attendance journal",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Service Name",
+                        "name": "Service",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Request body",
+                        "name": "Request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateAttendanceJournalRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.AttendanceJournalError"
+                        }
+                    }
+                }
+            }
+        },
         "/courses": {
             "post": {
                 "consumes": [
@@ -171,7 +259,7 @@ var doc = `{
             }
         },
         "/point_journal/get": {
-            "post": {
+            "get": {
                 "consumes": [
                     "application/json"
                 ],
@@ -200,7 +288,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.GetPointsJournalRequest"
+                            "$ref": "#/definitions/dto.GetJournalRequest"
                         }
                     }
                 ],
@@ -209,6 +297,50 @@ var doc = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/dto.PointJournal"
+                        }
+                    }
+                }
+            }
+        },
+        "/point_journal/update": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Update poins journal",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Service Name",
+                        "name": "Service",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Request body",
+                        "name": "Request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdatePointJournalRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Response"
                         }
                     }
                 }
@@ -253,6 +385,182 @@ var doc = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/dto.TokenizePayload"
+                        }
+                    }
+                }
+            }
+        },
+        "/topic/all": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get all topics",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Service Name",
+                        "name": "Service",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Request body",
+                        "name": "Request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.TopicAllRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetTopicsPayload"
+                        }
+                    }
+                }
+            }
+        },
+        "/topic/create": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "create topic",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Service Name",
+                        "name": "Service",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Request body",
+                        "name": "Request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.TopicUpdateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Topic"
+                        }
+                    }
+                }
+            }
+        },
+        "/topic/delete": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "delete topic",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Service Name",
+                        "name": "Service",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Request body",
+                        "name": "Request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.TopicDeleteRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/topic/update": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "update topic",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Service Name",
+                        "name": "Service",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Request body",
+                        "name": "Request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.TopicUpdateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Response"
                         }
                     }
                 }
@@ -318,13 +626,35 @@ var doc = `{
         "dto.AcademicYearsRequest": {
             "type": "object",
             "properties": {
-                "externalRef": {
+                "external_ref": {
                     "type": "string"
                 },
-                "serviceName": {
+                "service_name": {
                     "type": "string"
                 },
                 "userUchprocCode": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.Attendance": {
+            "type": "object",
+            "properties": {
+                "topic_number": {
+                    "type": "integer"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.AttendanceJournalError": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "student_id": {
                     "type": "integer"
                 }
             }
@@ -361,10 +691,10 @@ var doc = `{
         "dto.DeleteTokenRequest": {
             "type": "object",
             "properties": {
-                "externalRef": {
+                "external_ref": {
                     "type": "string"
                 },
-                "serviceName": {
+                "service_name": {
                     "type": "string"
                 },
                 "token": {
@@ -378,10 +708,10 @@ var doc = `{
                 "academicYear": {
                     "type": "string"
                 },
-                "externalRef": {
+                "external_ref": {
                     "type": "string"
                 },
-                "serviceName": {
+                "service_name": {
                     "type": "string"
                 }
             }
@@ -406,20 +736,45 @@ var doc = `{
                 }
             }
         },
-        "dto.GetPointsJournalRequest": {
+        "dto.GetAttendanceJournalPayload": {
+            "type": "object",
+            "properties": {
+                "journal": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.StudentAttendance"
+                    }
+                }
+            }
+        },
+        "dto.GetJournalRequest": {
             "type": "object",
             "properties": {
                 "course_id": {
                     "type": "integer"
                 },
-                "externalRef": {
+                "external_ref": {
                     "type": "string"
                 },
-                "serviceName": {
+                "limit": {
+                    "type": "integer"
+                },
+                "service_name": {
                     "type": "string"
                 },
                 "userUchprocCode": {
                     "type": "integer"
+                }
+            }
+        },
+        "dto.GetTopicsPayload": {
+            "type": "object",
+            "properties": {
+                "topics": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Topic"
+                    }
                 }
             }
         },
@@ -448,13 +803,13 @@ var doc = `{
         "dto.GroupCoursesRequest": {
             "type": "object",
             "properties": {
-                "externalRef": {
+                "external_ref": {
                     "type": "string"
                 },
-                "groupId": {
+                "group_id": {
                     "type": "integer"
                 },
-                "serviceName": {
+                "service_name": {
                     "type": "string"
                 },
                 "userUchprocCode": {
@@ -493,7 +848,7 @@ var doc = `{
                 "max_point": {
                     "type": "integer"
                 },
-                "points": {
+                "students": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/dto.StudentPoint"
@@ -501,6 +856,17 @@ var doc = `{
                 },
                 "weeks_number": {
                     "type": "integer"
+                }
+            }
+        },
+        "dto.PointUpdate": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "point": {
+                    "type": "number"
                 }
             }
         },
@@ -541,9 +907,38 @@ var doc = `{
                 }
             }
         },
+        "dto.StudentAttendance": {
+            "type": "object",
+            "properties": {
+                "attendance": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.Attendance"
+                    }
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "record_book": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.StudentPoint": {
             "type": "object",
             "properties": {
+                "first_rating": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.WeekPoint"
+                    }
+                },
+                "first_rating_sum": {
+                    "type": "number"
+                },
                 "grade": {
                     "type": "string"
                 },
@@ -559,11 +954,14 @@ var doc = `{
                 "record_book": {
                     "type": "string"
                 },
-                "week_points": {
+                "second_rating": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/dto.WeekPoint"
                     }
+                },
+                "second_rating_sum": {
+                    "type": "number"
                 }
             }
         },
@@ -581,23 +979,120 @@ var doc = `{
         "dto.TokenizeRequest": {
             "type": "object",
             "properties": {
-                "externalRef": {
+                "external_ref": {
                     "type": "string"
                 },
-                "loginPass": {
+                "login_pass": {
                     "$ref": "#/definitions/dto.LoginPass"
                 },
-                "serviceName": {
+                "service_name": {
                     "type": "string"
+                }
+            }
+        },
+        "dto.TopicAllRequest": {
+            "type": "object",
+            "properties": {
+                "courseId": {
+                    "type": "integer"
+                },
+                "external_ref": {
+                    "type": "string"
+                },
+                "service_name": {
+                    "type": "string"
+                },
+                "userUchprocCode": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.TopicDeleteRequest": {
+            "type": "object",
+            "properties": {
+                "external_ref": {
+                    "type": "string"
+                },
+                "service_name": {
+                    "type": "string"
+                },
+                "topicId": {
+                    "type": "integer"
+                },
+                "userUchprocCode": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.TopicUpdateRequest": {
+            "type": "object",
+            "properties": {
+                "external_ref": {
+                    "type": "string"
+                },
+                "service_name": {
+                    "type": "string"
+                },
+                "topic": {
+                    "$ref": "#/definitions/models.Topic"
+                },
+                "topic_id": {
+                    "type": "integer"
+                },
+                "userUchprocCode": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.UpdateAttendanceJournalRequest": {
+            "type": "object",
+            "properties": {
+                "attendance": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.StudentAttendance"
+                    }
+                },
+                "course_id": {
+                    "type": "integer"
+                },
+                "external_ref": {
+                    "type": "string"
+                },
+                "service_name": {
+                    "type": "string"
+                },
+                "userUchprocCode": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.UpdatePointJournalRequest": {
+            "type": "object",
+            "properties": {
+                "course_id": {
+                    "type": "integer"
+                },
+                "external_ref": {
+                    "type": "string"
+                },
+                "points": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.PointUpdate"
+                    }
+                },
+                "service_name": {
+                    "type": "string"
+                },
+                "userUchprocCode": {
+                    "type": "integer"
                 }
             }
         },
         "dto.WeekPoint": {
             "type": "object",
             "properties": {
-                "editable": {
-                    "type": "boolean"
-                },
                 "point": {
                     "type": "number"
                 },
@@ -620,6 +1115,44 @@ var doc = `{
                 },
                 "id": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.Topic": {
+            "type": "object",
+            "properties": {
+                "cnzap": {
+                    "type": "string"
+                },
+                "dtzap": {
+                    "type": "string"
+                },
+                "editable": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "kol_kmd": {
+                    "type": "integer"
+                },
+                "kol_lab": {
+                    "type": "integer"
+                },
+                "kol_lek": {
+                    "type": "integer"
+                },
+                "kol_obsh": {
+                    "type": "integer"
+                },
+                "kol_prak": {
+                    "type": "integer"
+                },
+                "kol_sem": {
+                    "type": "integer"
+                },
+                "tema": {
+                    "type": "string"
                 }
             }
         }
