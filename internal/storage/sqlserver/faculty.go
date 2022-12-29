@@ -97,6 +97,11 @@ func set(faculties []dto.Faculty, faculty dto.Faculty) (fk []dto.Faculty) {
 		return
 	}
 
+	for _, g := range fk[fInd].Specialties[sInd].Years[cInd].Groups {
+		if g.Id == faculty.Specialties[0].Years[0].Groups[0].Id {
+			return
+		}
+	}
 	fk[fInd].Specialties[sInd].Years[cInd].Groups = append(fk[fInd].Specialties[sInd].Years[cInd].Groups, faculty.Specialties[0].Years[0].Groups[0])
 
 	return

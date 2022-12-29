@@ -3,8 +3,8 @@ package dto
 import "time"
 
 type Course struct {
-	PointId      int64  `json:"point_id"`
-	AttendanceId int64  `json:"attendance_id"`
+	PointId      int64  `json:"point_id,omitempty"`
+	AttendanceId int64  `json:"attendance_id,omitempty"`
 	CourseName   string `json:"course_name"`
 	GroupId      int64  `json:"group_id"`
 	TeacherName  string `json:"teacher_name"`
@@ -23,9 +23,9 @@ type AuthParams struct {
 }
 
 type PointJournal struct {
-	WeeksNumber int            `json:"weeks_number"`
+	Header      []Week         `json:"header"`
 	CurrentWeek int            `json:"current_week"`
-	MaxPoint    int            `json:"max_point"`
+	MaxPoint    float32        `json:"max_point"`
 	Students    []StudentPoint `json:"students"`
 }
 
@@ -44,7 +44,12 @@ type StudentPoint struct {
 	Name            string      `json:"name"`
 	RecordBook      string      `json:"record_book"`
 	PointsSum       float32     `json:"points_sum"`
+	GradeStr        string      `json:"grade_str"`
 	Grade           string      `json:"grade"`
+	GradeExact      string      `json:"grade_exact"`
+	Exam            string      `json:"exam"`
+	ExamFx          string      `json:"exam_fx"`
+	ExamF           string      `json:"exam_f"`
 	FirstRating     []WeekPoint `json:"first_rating"`
 	SecondRating    []WeekPoint `json:"second_rating"`
 	FirstRatingSum  float32     `json:"first_rating_sum"`

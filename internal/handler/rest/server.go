@@ -19,7 +19,7 @@ import (
 //doc generating command
 // swag init -g handlers/rest/server.go
 
-//Server - http api server
+// Server - http api server
 // @title API
 // @schemes http
 // @BasePath
@@ -29,12 +29,12 @@ type Server struct {
 	service    service.Service
 }
 
-//New - new http api server
+// New - new http api server
 func New(cfg *config.Config, svc service.Service) *Server {
 	return &Server{cfg: cfg, service: svc}
 }
 
-//Run http api server
+// Run http api server
 func (s *Server) Run() {
 
 	s.httpServer = &http.Server{
@@ -47,13 +47,14 @@ func (s *Server) Run() {
 	}
 
 	logger.Logger.Info("web api server starting", zap.String("Port", s.cfg.ServerPort), zap.String("", s.cfg.ServerPrefix))
+	log.Println("http server start ...")
 	err := s.httpServer.ListenAndServe()
 	if err != http.ErrServerClosed {
 		log.Fatalln(err)
 	}
 }
 
-//Shutdown - graceful shutdown of http api server
+// Shutdown - graceful shutdown of http api server
 func (s *Server) Shutdown(ctx context.Context) {
 	if err := s.httpServer.Shutdown(ctx); err != nil {
 		log.Println(err)
@@ -69,7 +70,7 @@ func (s *Server) ping(w http.ResponseWriter, r *http.Request) {
 	s.reply(w, dto.Response{Code: enums.Success, Message: "pong"})
 }
 
-//parse body of http Request
+// parse body of http Request
 func parseBody(r *http.Request, req interface{}) bool {
 	if r.Body == nil {
 		return false

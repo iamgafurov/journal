@@ -70,7 +70,7 @@ func (s *service) UpdateAttendanceJournal(ctx context.Context, req dto.UpdateAtt
 		return
 	}
 
-	if statement.Kst != req.UserUchprocCode && statement.Kas != req.UserUchprocCode {
+	if statement.Kst != req.UserUchprocCode && statement.Kas != req.UserUchprocCode && req.ServiceName != "turnstile" {
 		resp.ErrCode(enums.BadRequest)
 		resp.Message = "course does not belong to this user"
 		return

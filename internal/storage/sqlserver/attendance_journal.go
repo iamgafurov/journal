@@ -161,8 +161,6 @@ func (d *db) GetAttendanceStatement(ctx context.Context, id int64) (statement mo
 }
 
 func (d *db) UpdateAttendanceJournal(ctx context.Context, courseId int64, at []dto.StudentAttendance) (err error, atErr []dto.AttendanceJournalError) {
-	queryPrefix := `UPDATE tblvdtstkr SET `
-
 	for _, student := range at {
 		cposesQuery := ``
 		for _, attendance := range student.Attendance {
@@ -186,7 +184,7 @@ func (d *db) UpdateAttendanceJournal(ctx context.Context, courseId int64, at []d
 
 		//trim last comma
 		cposesQuery = cposesQuery[:len(cposesQuery)-2]
-		cmd, err := tx.ExecContext(ctx, queryPrefix+cposesQuery+`WHERE kdn = $1 AND kvd = $2`, student.Id, courseId)
+		cmd, err := tx.ExecContext(ctx, `UPDATE tblvdtstkr SET `+cposesQuery+` WHERE kdn = $1 AND kvd = $2`, student.Id, courseId)
 		if err != nil {
 			tx.Rollback()
 			atErr = append(atErr, dto.AttendanceJournalError{StudentId: student.Id, Message: student.Name + ", err:" + err.Error()})

@@ -9,6 +9,7 @@ const (
 	TokenExpired
 	UserNotActive
 	SuccessPartially
+	GatewayTimeout
 )
 
 const (

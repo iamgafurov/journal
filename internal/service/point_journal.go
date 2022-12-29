@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/iamgafurov/journal/internal/dto"
 	"github.com/iamgafurov/journal/internal/enums"
 	"go.uber.org/zap"
@@ -29,8 +30,22 @@ func (s *service) GetPointsJournal(ctx context.Context, req dto.GetJournalReques
 		resp.ErrStr = err.Error()
 		s.log.Error("internal/service.point_journal.go, GetPointsJournal, s.getCurrentWeek", zap.Error(err), zap.Any("Request", req))
 	}
+	//todo handle error case
+	if cw > 18 {
+		cw = 18
+	}
+
+	header := make([]dto.Week, 0)
+
+	for i := 1; i <= cw; i++ {
+		header = append(header, dto.Week{Number: i, Editable: false})
+	}
+	//set curren week editable true
+	header[cw-1].Editable = true
+
 	journal.CurrentWeek = cw
-	log.Println(len(journal.Students))
+	journal.Header = header
+	journal.MaxPoint = s.cfg.MaxPoint
 	resp.ErrCode(enums.Success)
 	resp.Payload = journal
 
@@ -56,9 +71,16 @@ func (s *service) UpdatePointJournal(ctx context.Context, req dto.UpdatePointJou
 			resp.ErrStr = "null point.id"
 			return
 		}
+		if p.Point > s.cfg.MaxPoint {
+			resp.ErrCode(enums.BadRequest)
+			resp.ErrStr = fmt.Sprintf("max point is%f", s.cfg.MaxPoint)
+			resp.Message = resp.ErrStr
+			return
+		}
 	}
 
 	userCode, err := s.mssqlDB.GetPointUserCode(ctx, req.CourseId)
+	log.Println(userCode, " ", req.UserUchprocCode)
 	if err != nil {
 		if err == dto.ErrNoRows {
 			resp.ErrCode(enums.BadRequest)
@@ -74,7 +96,7 @@ func (s *service) UpdatePointJournal(ctx context.Context, req dto.UpdatePointJou
 	if req.UserUchprocCode != userCode {
 		resp.ErrCode(enums.BadRequest)
 		resp.Message = "course does not belong to this user"
-		return
+		//return
 	}
 
 	cw, err := s.getCurrentWeek(ctx)
@@ -98,8 +120,7 @@ func (s *service) UpdatePointJournal(ctx context.Context, req dto.UpdatePointJou
 		return
 	}
 
-	resp.ErrCode(enums.Success)
-	return
+	return s.GetPointsJournal(ctx, dto.GetJournalRequest{ServiceName: req.ServiceName, ExternalRef: req.ExternalRef, CourseId: req.CourseId, UserUchprocCode: req.UserUchprocCode, Limit: 18})
 }
 
 func (s *service) getCurrentWeek(ctx context.Context) (int, error) {

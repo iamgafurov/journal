@@ -156,7 +156,51 @@ var doc = `{
                 }
             }
         },
-        "/courses": {
+        "/courses/at": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get group courses",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Service Name",
+                        "name": "Service",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Request body",
+                        "name": "Request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.GroupCoursesRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GroupCoursesPayload"
+                        }
+                    }
+                }
+            }
+        },
+        "/courses/pt": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -615,7 +659,7 @@ var doc = `{
         "dto.AcademicYearsPayload": {
             "type": "object",
             "properties": {
-                "academicYears": {
+                "academic_years": {
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -705,7 +749,7 @@ var doc = `{
         "dto.FacultiesRequest": {
             "type": "object",
             "properties": {
-                "academicYear": {
+                "academic_year": {
                     "type": "string"
                 },
                 "external_ref": {
@@ -803,6 +847,9 @@ var doc = `{
         "dto.GroupCoursesRequest": {
             "type": "object",
             "properties": {
+                "academic_year": {
+                    "type": "string"
+                },
                 "external_ref": {
                     "type": "string"
                 },
@@ -845,6 +892,12 @@ var doc = `{
                 "current_week": {
                     "type": "integer"
                 },
+                "header": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.Week"
+                    }
+                },
                 "max_point": {
                     "type": "integer"
                 },
@@ -853,9 +906,6 @@ var doc = `{
                     "items": {
                         "$ref": "#/definitions/dto.StudentPoint"
                     }
-                },
-                "weeks_number": {
-                    "type": "integer"
                 }
             }
         },
@@ -968,11 +1018,17 @@ var doc = `{
         "dto.TokenizePayload": {
             "type": "object",
             "properties": {
-                "expireAt": {
+                "expire_at": {
+                    "type": "string"
+                },
+                "full_name": {
                     "type": "string"
                 },
                 "token": {
                     "type": "string"
+                },
+                "user_code": {
+                    "type": "integer"
                 }
             }
         },
@@ -993,7 +1049,7 @@ var doc = `{
         "dto.TopicAllRequest": {
             "type": "object",
             "properties": {
-                "courseId": {
+                "course_id": {
                     "type": "integer"
                 },
                 "external_ref": {
@@ -1086,6 +1142,17 @@ var doc = `{
                     "type": "string"
                 },
                 "userUchprocCode": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.Week": {
+            "type": "object",
+            "properties": {
+                "editable": {
+                    "type": "boolean"
+                },
+                "number": {
                     "type": "integer"
                 }
             }

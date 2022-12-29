@@ -27,13 +27,14 @@ type CheckUserRequest struct {
 type FacultiesRequest struct {
 	ServiceName  string `json:"service_name"`
 	ExternalRef  string `json:"external_ref"`
-	AcademicYear string `json:"academicYear"`
+	AcademicYear string `json:"academic_year"`
 }
 
 type GroupCoursesRequest struct {
 	ServiceName     string `json:"service_name"`
 	ExternalRef     string `json:"external_ref"`
 	GroupId         int64  `json:"group_id"`
+	AcademicYear    string `json:"academic_year"`
 	UserUchprocCode int64
 }
 
@@ -46,7 +47,7 @@ type AcademicYearsRequest struct {
 type TopicAllRequest struct {
 	ServiceName     string `json:"service_name"`
 	ExternalRef     string `json:"external_ref"`
-	CourseId        int64  `json:"courseId"`
+	CourseId        int64  `json:"course_id"`
 	UserUchprocCode int64
 }
 

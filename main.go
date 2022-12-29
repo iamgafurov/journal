@@ -54,5 +54,10 @@ func main() {
 		close(sig)
 		cancel()
 	}()
+
+	if cfg.TurnstileWorker == "on" {
+		go svc.StartTurnstileWorker(ctx)
+	}
+
 	server.Run()
 }

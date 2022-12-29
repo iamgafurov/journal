@@ -6,14 +6,19 @@ import (
 )
 
 type Config struct {
-	ServerPrefix          string `json:"restPrefix"`
-	ServerPort            string `json:"serverPort"`
-	PostgresConnStr       string `json:"postgresConnStr"`
-	MSSQLConnStr          string `json:"mssqlConnStr"`
-	MasterKey             string `json:"masterKey"`
-	SentryDSN             string `json:"sentryDSN"`
-	TokensDurationInHours int    `json:"tokensDurationInHours"`
-	Debug                 bool   `json:"debug"`
+	ServerPrefix          string  `json:"restPrefix"`
+	ServerPort            string  `json:"serverPort"`
+	PostgresConnStr       string  `json:"postgresConnStr"`
+	MSSQLConnStr          string  `json:"mssqlConnStr"`
+	MasterKey             string  `json:"masterKey"`
+	SentryDSN             string  `json:"sentryDSN"`
+	TokensDurationInHours int     `json:"tokensDurationInHours"`
+	TurnstileToken        string  `json:"turnstileToken"`
+	TurnstileMasterKey    string  `json:"turnstileMasterKey"`
+	TurnstileUrl          string  `json:"turnstileUrl"`
+	TurnstileWorker       string  `json:"turnstileWorker"`
+	MaxPoint              float32 `json:"maxPoint"`
+	Debug                 bool    `json:"debug"`
 }
 
 func New() (cfg *Config, err error) {

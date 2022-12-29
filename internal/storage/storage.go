@@ -11,7 +11,8 @@ type MSSQLDB interface {
 	GetUserAuthParams(ctx context.Context, login string) (params dto.AuthParams, err error)
 	UserGetLoginByUchprocId(ctx context.Context, uchprocId int64) (login string, err error)
 	GetFaculties(ctx context.Context, userUchprocId int64, studyYear string) (res []dto.Faculty, err error)
-	GetGroupCourses(ctx context.Context, groupId, userId int64) (cs []dto.Course, err error)
+	GetGroupCoursesAttendance(ctx context.Context, groupId, userId int64, academicYear string) (cs []dto.Course, err error)
+	GetGroupCoursesPoint(ctx context.Context, groupId, userId int64, academicYear string) (cs []dto.Course, err error)
 	GetAcademicYears(ctx context.Context, userUchprocCode int64) ([]string, error)
 
 	GetTopics(ctx context.Context, userCode, courseId int64) ([]models.Topic, error)
@@ -29,6 +30,8 @@ type MSSQLDB interface {
 
 	GetAttendanceStatement(ctx context.Context, id int64) (statement models.Statement, err error)
 	UpdateAttendanceJournal(ctx context.Context, courseId int64, at []dto.StudentAttendance) (err error, atErr []dto.AttendanceJournalError)
+
+	GetTurnstileStudents(ctx context.Context) ([]dto.CheckAttendanceItem, error)
 	Close()
 }
 

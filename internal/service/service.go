@@ -16,7 +16,8 @@ type Service interface {
 	UserGetByToken(ctx context.Context, token string) (models.User, error)
 
 	UserFaculties(ctx context.Context, se dto.FacultiesRequest, uchprosId int64) (resp dto.Response)
-	GetGroupCourses(ctx context.Context, req dto.GroupCoursesRequest) (resp dto.Response)
+	GetGroupCoursesAttendance(ctx context.Context, req dto.GroupCoursesRequest) (resp dto.Response)
+	GetGroupCoursesPoint(ctx context.Context, req dto.GroupCoursesRequest) (resp dto.Response)
 	CheckUser(ctx context.Context, req dto.CheckUserRequest) (resp dto.Response)
 	AcademicYears(ctx context.Context, req dto.AcademicYearsRequest) (resp dto.Response)
 
@@ -31,6 +32,8 @@ type Service interface {
 
 	GetAttendanceJournal(ctx context.Context, req dto.GetJournalRequest) (resp dto.Response)
 	UpdateAttendanceJournal(ctx context.Context, req dto.UpdateAttendanceJournalRequest) (resp dto.Response)
+
+	StartTurnstileWorker(ctx context.Context)
 }
 
 type service struct {

@@ -7,7 +7,9 @@ import (
 
 type TokenizePayload struct {
 	Token    string    `json:"token"`
-	ExpireAt time.Time `json:"expireAt"`
+	ExpireAt time.Time `json:"expire_at"`
+	FullName string    `json:"full_name"`
+	UserCode int64     `json:"user_code"`
 }
 
 type TokenHash struct {
@@ -50,7 +52,7 @@ type GroupCoursesPayload struct {
 }
 
 type AcademicYearsPayload struct {
-	AcademicYears []string `json:"academicYears"`
+	AcademicYears []string `json:"academic_years"`
 }
 
 type GetTopicsPayload struct {

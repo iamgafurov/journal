@@ -34,7 +34,6 @@ func (s *service) Tokenize(ctx context.Context, request dto.TokenizeRequest) (re
 	}
 
 	params, err := s.mssqlDB.GetUserAuthParams(ctx, l)
-	log.Println(params)
 	if err != nil {
 		if err == dto.ErrNoRows {
 			resp.ErrCode(enums.Unauthorized)
@@ -96,6 +95,8 @@ func (s *service) Tokenize(ctx context.Context, request dto.TokenizeRequest) (re
 	resp.Payload = dto.TokenizePayload{
 		Token:    token,
 		ExpireAt: user.ExpireAt,
+		FullName: user.Name,
+		UserCode: user.UchprocCode,
 	}
 
 	return

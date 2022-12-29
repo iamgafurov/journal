@@ -1,7 +1,7 @@
 definitions:
   dto.AcademicYearsPayload:
     properties:
-      academicYears:
+      academic_years:
         items:
           type: string
         type: array
@@ -59,7 +59,7 @@ definitions:
     type: object
   dto.FacultiesRequest:
     properties:
-      academicYear:
+      academic_year:
         type: string
       external_ref:
         type: string
@@ -122,6 +122,8 @@ definitions:
     type: object
   dto.GroupCoursesRequest:
     properties:
+      academic_year:
+        type: string
       external_ref:
         type: string
       group_id:
@@ -149,14 +151,16 @@ definitions:
     properties:
       current_week:
         type: integer
+      header:
+        items:
+          $ref: '#/definitions/dto.Week'
+        type: array
       max_point:
         type: integer
       students:
         items:
           $ref: '#/definitions/dto.StudentPoint'
         type: array
-      weeks_number:
-        type: integer
     type: object
   dto.PointUpdate:
     properties:
@@ -229,10 +233,14 @@ definitions:
     type: object
   dto.TokenizePayload:
     properties:
-      expireAt:
+      expire_at:
+        type: string
+      full_name:
         type: string
       token:
         type: string
+      user_code:
+        type: integer
     type: object
   dto.TokenizeRequest:
     properties:
@@ -245,7 +253,7 @@ definitions:
     type: object
   dto.TopicAllRequest:
     properties:
-      courseId:
+      course_id:
         type: integer
       external_ref:
         type: string
@@ -306,6 +314,13 @@ definitions:
       service_name:
         type: string
       userUchprocCode:
+        type: integer
+    type: object
+  dto.Week:
+    properties:
+      editable:
+        type: boolean
+      number:
         type: integer
     type: object
   dto.WeekPoint:
@@ -442,7 +457,36 @@ paths:
           schema:
             $ref: '#/definitions/dto.AttendanceJournalError'
       summary: Update attendance journal
-  /courses:
+  /courses/at:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: token
+        in: header
+        name: Token
+        required: true
+        type: string
+      - description: Service Name
+        in: header
+        name: Service
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.GroupCoursesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GroupCoursesPayload'
+      summary: Get group courses
+  /courses/pt:
     post:
       consumes:
       - application/json

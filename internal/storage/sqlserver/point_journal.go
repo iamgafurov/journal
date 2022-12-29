@@ -13,7 +13,7 @@ func (d *db) GetPointsJournal(ctx context.Context, courseId int64) (dto.PointJou
 		studentPoints = make([]dto.StudentPoint, 0)
 	)
 	query := `SELECT 
-    			std.kdn, 
+    			tblvdstkr.kdn, 
        			nst,
        			kzc,
        			tblvdstkr.oceblkr1, 
@@ -35,7 +35,12 @@ func (d *db) GetPointsJournal(ctx context.Context, courseId int64) (dto.PointJou
        			tblvdstkr.oceblkr17, 
        			tblvdstkr.oceblkr18,
        			tblvdstkr.itoceblkr,
-       			tblvdstkr.itocekr
+       			tblvdstkr.itocekr,
+       			tblvdstkr.oce,
+       			tblvdstkr.itocebl,
+       			tblvdstkr.oceblkr,
+       			tblvdstkr.oceblkr19,
+       			tblvdstkr.oceblkr19
 			FROM std
 			INNER JOIN tblvdstkr on std.kdn = tblvdstkr.kst
 			WHERE tblvdstkr.kvd = $1
@@ -55,7 +60,12 @@ func (d *db) GetPointsJournal(ctx context.Context, courseId int64) (dto.PointJou
 			&st.RecordBook,
 			&pt[0], &pt[1], &pt[2], &pt[3], &pt[4], &pt[5], &pt[6], &pt[7], &pt[8], &pt[9], &pt[10], &pt[11], &pt[12], &pt[13], &pt[14], &pt[15], &pt[16], &pt[17],
 			&st.PointsSum,
+			&st.GradeStr,
 			&st.Grade,
+			&st.GradeExact,
+			&st.Exam,
+			&st.ExamFx,
+			&st.ExamF,
 		)
 		if err != nil {
 			return journal, err
@@ -67,7 +77,7 @@ func (d *db) GetPointsJournal(ctx context.Context, courseId int64) (dto.PointJou
 
 		for i := 0; i < 9; i++ {
 			w := dto.WeekPoint{
-				WeekNumber: i,
+				WeekNumber: i + 1,
 				Point:      pt[i],
 			}
 			firsRatingSum += pt[i]
@@ -76,7 +86,7 @@ func (d *db) GetPointsJournal(ctx context.Context, courseId int64) (dto.PointJou
 
 		for i := 9; i < 18; i++ {
 			w := dto.WeekPoint{
-				WeekNumber: i,
+				WeekNumber: i + 1,
 				Point:      pt[i],
 			}
 			secondRatingSum += pt[i]
@@ -107,7 +117,7 @@ func (d *db) UpdatePointsJournal(ctx context.Context, points []dto.PointUpdate, 
 	if err != nil {
 		return
 	}
-	currentWeek -= 20
+	currentWeek = 16
 	weekColumn := fmt.Sprintf("oceblkr%d", currentWeek)
 
 	for _, p := range points {
